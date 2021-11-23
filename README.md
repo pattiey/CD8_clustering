@@ -96,7 +96,9 @@ The workflow produces the result of KNN clustering on the scRNA-seq samples.
 | `TSNE_plot.png` | A t-SNE plot of the gene expression data, coloured by cluster |
 | `UMAP_plot.png` | A UMAP plot of the gene expression data, coloured by cluster |
 
-Using the sample data and the parameters specified in the Snakefile, here are the plot produced by the workflow.
+Using the sample data and the parameters specified in the Snakefile, here are the plots produced by the workflow.
+
+The K Nearest Neighbours clustering found four distinct clusters. Using this clustering, one could then perform further analysis to find the corresponding CD8+ cell subtype for each cluster in order to extract information about the cellular composition of the experimental samples. 
 
 ### Principal Component Plot
 
