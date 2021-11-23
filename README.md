@@ -16,7 +16,7 @@ This workflow makes use of the [K Nearest Neighbours clustering algorithm](https
 
 # Workflow
 
-![DAG][dag.svg]
+![DAG][https://github.com/pattiey/CD8_clustering/blob/main/dag.svg]
 
 The main steps of this workflow are:
 
@@ -100,12 +100,12 @@ Using the sample data and the parameters specified in the Snakefile, here are th
 
 ### Principal Component Plot
 
-![PCA_plot][sample_output/PCA_plot.png]
+![PCA_plot][https://github.com/pattiey/CD8_clustering/blob/main/sample_output/PCA_plot.png]
 
 ### t-SNE Plot
 
-![TSNE_plot][sample_output/TSNE_plot.png]
+![TSNE_plot][https://github.com/pattiey/CD8_clustering/blob/main/sample_output/TSNE_plot.png]
 
 ### UMAP plot
 
-![UMAP_plot][sample_output/UMAP_plot.png]
+![UMAP_plot][https://github.com/pattiey/CD8_clustering/blob/main/sample_output/UMAP_plot.png]
