@@ -78,7 +78,7 @@ data.seurat <- FindClusters(data.seurat, resolution = resolution)
 
 # Plot cell clusters
 pca.plot <- DimPlot(data.seurat, reduction = "pca", group.by = "seurat_clusters") +
-            ggtitle("TSNE plot of data coloured by cluster") +
+            ggtitle("PCA plot of data coloured by cluster") +
             theme(aspect.ratio = 1, legend.position = "right")
 ggsave(file.path(output_dir, 'PCA_plot.png'), pca.plot)
 tsne.plot <- DimPlot(data.seurat, reduction = "tsne", group.by = "seurat_clusters") +
