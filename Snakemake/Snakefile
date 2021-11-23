@@ -1,0 +1,120 @@
+import os
+
+DATA_DIR = config["DATA_DIR"]
+SCRIPTS_DIR = config["SCRIPTS_DIR"]
+OUTPUT_DIR = config["OUTPUT_DIR"]
+FTP_URL = config["FTP_URL"]
+RAW_FILE = FTP_URL.split("/")[-1]
+PROJECT_NAME = config["PROJECT"]
+SAMPLES = config["SAMPLES"]
+
+for sample in SAMPLES:
+    sample_datadir = os.path.join(DATA_DIR, sample)
+    if not os.path.exists(sample_datadir):
+        os.makedirs(sample_datadir)
+
+rule all:
+    input:
+        os.path.join(OUTPUT_DIR, 'cellClusters.csv'),
+        os.path.join(OUTPUT_DIR, 'PCA_plot.png'),
+        os.path.join(OUTPUT_DIR, 'UMAP_plot.png'),
+        os.path.join(OUTPUT_DIR, 'TSNE_plot.png')
+
+rule retrieve_data:
+    output:
+        os.path.join(DATA_DIR, RAW_FILE)
+    shell:
+        "wget {FTP_URL} --output-document {output}"
+
+rule extract_data_files:
+    input:
+        os.path.join(DATA_DIR, RAW_FILE)
+    output:
+        expand(os.path.join(DATA_DIR, '{sample}_matrix.tar.gz'), sample = SAMPLES)
+    shell:
+        "tar -xvf {input} -C {DATA_DIR}"
+
+rule move_sample_files:
+    input:
+        os.path.join(DATA_DIR, '{sample}_matrix.tar.gz')
+    output:
+        os.path.join(DATA_DIR, '{sample}', '{sample}_matrix.tar.gz')
+    shell:
+        "mv {input} {output}"
+
+rule extract_sample_data:
+    input:
+        os.path.join(DATA_DIR, '{sample}', '{sample}_matrix.tar.gz')
+    output:
+        matrix = os.path.join(DATA_DIR, '{sample}', 'matrix.mtx'),
+        barcodes = os.path.join(DATA_DIR, '{sample}', 'barcodes.tsv'),
+        genes = os.path.join(DATA_DIR, '{sample}', 'genes.tsv')
+    shell:
+        'tar -xvf {input} -C {DATA_DIR}/{wildcards.sample}'
+
+rule aggregate_samples:
+# aggregated file will have corresponding index in SAMPLE as last character in barcode
+    input:
+        aggregate_script = os.path.join(SCRIPTS_DIR, 'aggregate_samples.R'),
+        matrices = expand(os.path.join(DATA_DIR, '{sample}', 'matrix.mtx'), sample = SAMPLES),
+        barcodes = expand(os.path.join(DATA_DIR, '{sample}', 'barcodes.tsv'), sample = SAMPLES),
+        genes = expand(os.path.join(DATA_DIR, '{sample}', 'genes.tsv'), sample = SAMPLES)
+    output:
+        os.path.join(DATA_DIR, 'aggregated', 'matrix.mtx'),
+        os.path.join(DATA_DIR, 'aggregated', 'barcodes.tsv'),
+        os.path.join(DATA_DIR, 'aggregated', 'genes.tsv')
+    shell:
+        'Rscript {input.aggregate_script} '
+        '--data_dir {DATA_DIR} --output_dir {DATA_DIR}/aggregated '
+        '--samples {SAMPLES}'
+
+rule filter_cells:
+# filter cells based on quality of reads and presence of CD8 markers
+    input:
+        filter_script = os.path.join(SCRIPTS_DIR, 'filter_cells.R'),
+        mtx = os.path.join(DATA_DIR, 'aggregated', 'matrix.mtx'),
+        barcodes = os.path.join(DATA_DIR, 'aggregated', 'barcodes.tsv'),
+        genes = os.path.join(DATA_DIR, 'aggregated', 'genes.tsv')
+    output:
+        mtx = os.path.join(DATA_DIR, 'filtered', 'matrix.mtx'),
+        barcodes = os.path.join(DATA_DIR, 'filtered', 'barcodes.tsv'),
+        genes = os.path.join(DATA_DIR, 'filtered', 'genes.tsv')
+    params:
+        mito = 6,
+        ribo = 50,
+        nGene_lo = 800,
+        nGene_hi = 5000,
+        nUMI_lo = 1500,
+        nUMI_hi = 30000
+    shell:
+        'Rscript {input.filter_script} '
+        '--data_dir {DATA_DIR}/aggregated '
+        '--project {PROJECT_NAME} --mito {params.mito} '
+        '--ribo {params.ribo} --output_dir {DATA_DIR}/filtered '
+        '--nFeature_lo {params.nGene_lo} --nFeature_hi {params.nGene_hi} '
+        '--nCount_lo {params.nUMI_lo} --nCount_hi {params.nUMI_hi}'
+
+rule cluster_cells:
+    input:
+        cluster_script = os.path.join(SCRIPTS_DIR, 'cluster_cells.R'),
+        mtx = os.path.join(DATA_DIR, 'filtered', 'matrix.mtx'),
+        barcodes = os.path.join(DATA_DIR, 'filtered', 'barcodes.tsv'),
+        genes = os.path.join(DATA_DIR, 'filtered', 'genes.tsv')
+    output:
+        os.path.join(OUTPUT_DIR, 'cellClusters.csv'),
+        os.path.join(OUTPUT_DIR, 'PCA_plot.png'),
+        os.path.join(OUTPUT_DIR, 'UMAP_plot.png'),
+        os.path.join(OUTPUT_DIR, 'TSNE_plot.png')
+    params:
+      reduction = "pca",
+      num_features = 10000,
+      k = 30,
+      resolution = 0.3,
+      dims = 10
+    shell:
+        'Rscript {input.cluster_script} '
+        '--data_dir {DATA_DIR}/filtered --project {PROJECT_NAME} '
+        '--output_dir {OUTPUT_DIR} --script_dir {SCRIPTS_DIR} '
+        '--num_features {params.num_features} '
+        '--reduction {params.reduction} --k_param {params.k} '
+        '--resolution {params.resolution} --dims {params.dims}'

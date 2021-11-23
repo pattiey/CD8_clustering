@@ -1,0 +1,13 @@
+DATA_DIR: /Users/pattieye/Documents/2021W/YPP/CD8_clustering/B16CD28/data
+FTP_URL: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE116nnn/GSE116390/suppl/GSE116390_RAW.tar
+SCRIPTS_DIR: /Users/pattieye/Documents/2021W/YPP/CD8_clustering/scripts
+OUTPUT_DIR: /Users/pattieye/Documents/2021W/YPP/CD8_clustering/B16CD28/output
+
+PROJECT: B16CD28
+SAMPLES: [GSM3937767_PMEL1,
+  GSM3937768_PMEL2,
+  GSM3937769_PMEL3,
+  GSM3937770_WT1,
+  GSM3937771_WT2,
+  GSM3937772_WT3,
+  GSM3937773_WT4]
