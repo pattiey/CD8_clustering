@@ -1,5 +1,6 @@
-DATA_DIR: /Users/pattieye/Documents/2021W/YPP/CD8_clustering/B16CD28/data
 FTP_URL: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE116nnn/GSE116390/suppl/GSE116390_RAW.tar
+
+DATA_DIR: /Users/pattieye/Documents/2021W/YPP/CD8_clustering/B16CD28/data
 SCRIPTS_DIR: /Users/pattieye/Documents/2021W/YPP/CD8_clustering/scripts
 OUTPUT_DIR: /Users/pattieye/Documents/2021W/YPP/CD8_clustering/B16CD28/output
 

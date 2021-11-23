@@ -15,9 +15,9 @@ parser$add_argument("-d", "--data_dir", type = "character", default = here("data
                     help = "directory where data is stored")
 parser$add_argument("-p", "--project", type = "character", default = "test",
                     help = "name of project")
-parser$add_argument("--mito", type = "double", default = 1.0,
+parser$add_argument("--mito", type = "double", default = 100,
                     help = "maximum percentage threshold of mitochondrial expression to filter")
-parser$add_argument("--ribo", type = "double", default = 1.0,
+parser$add_argument("--ribo", type = "double", default = 100,
                     help = "maximum percentage threshold of ribosomal expression to filter")
 parser$add_argument("--nFeature_lo", type = "integer", default = 0,
                     help = "minimum number of features present in cells to keep")
