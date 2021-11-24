@@ -3,6 +3,8 @@ if (!requireNamespace("BiocManager", quietly = TRUE))
 
 if (!requireNamespace("Seurat", quietly = TRUE))
   install.packages("Seurat")
+if (!requireNamespace("dplyr", quietly = TRUE))
+  install.packages("dplyr")
 if (!requireNamespace("argparse", quietly = TRUE))
   install.packages("argparse")
 if (!requireNamespace("here", quietly = TRUE))

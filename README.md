@@ -4,7 +4,7 @@
 
 Single cell RNA-seq (scRNA-seq) experiments are increasing in prevalence within biological experimentation. An advantage of scRNA-seq over bulk sequencing experiments is the ability to look at gene expression of individual cells. This level of granularity allows for analysis that would otherwise not be possible with bulk sequencing experiments.
 
-A classic example of single cell specific analysis is cell clustering. In a bulk sequencing experiment, the gene expression data is a mixture of various cell types that cannot be separated. In scRNA-seq experiments, individual cells within a sample can be separated into specific sub-type clusters based on their gene expression profiles using classic clustering methods.
+A classic example of single cell specific analysis is cell clustering. In a bulk sequencing experiment, the gene expression data is a mixture of various cell types that cannot be separated, so it is extremely difficult to get an accurate picture of the cellular composition of a sample. In scRNA-seq experiments, individual cells within a sample can be separated into specific sub-type clusters based on their gene expression profiles using classic clustering methods, resulting in the ability to infer the composition of cellular sub-types of a sample.
 
 In this CD8_clustering workflow, we look specifically at CD8+ T cells, also known as "killer T cells", which have a cytotoxic function within adaptive immunity. CD8+ T cells are typically categorized into specific subtypes - naive, memory (stem cell, central, and effector), effector, and exhausted. The subtypes of CD8+ T cell have different gene expression profiles as well as different functions in the immune system.
 
@@ -21,7 +21,7 @@ This workflow makes use of the [K Nearest Neighbours clustering algorithm](https
 The main steps of this workflow are:
 
 1. FTP download of raw gene expression matrix files for all relevant samples from the NCBI GEO (tar format).
-2. Extract individual sample specific data files.
+2. Extract individual sample specific data files (in this DAG, there are 7 individual samples).
 3. Aggregation of individual sample data into one singular gene expression matrix.
 4. Filter features and cells based on user determined thresholds.
 5. Clustering of cells using KNN on dimension reduced gene expression data.
@@ -113,6 +113,7 @@ The workflow produces the result of KNN clustering on the scRNA-seq samples.
 | `PCA_plot.png` | A plot of the first two principal components of the gene expression data, coloured by cluster |
 | `TSNE_plot.png` | A t-SNE plot of the gene expression data, coloured by cluster |
 | `UMAP_plot.png` | A UMAP plot of the gene expression data, coloured by cluster |
+| `cell_comp.png` | A plot of cluster proportions, total and by sample |
 
 Using the sample data and the parameters specified in the Snakefile, here are the plots produced by the workflow.
 
@@ -129,3 +130,7 @@ The K Nearest Neighbours clustering found four distinct clusters. Using this clu
 ### UMAP plot
 
 ![alt text](https://github.com/pattiey/CD8_clustering/blob/main/sample_output/UMAP_plot.png)
+
+### Cluster Composition Plot
+
+![alt text](https://github.com/pattiey/CD8_clustering/blob/main/sample_output/cell_comp.png)

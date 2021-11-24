@@ -6,6 +6,7 @@ suppressMessages(library(Matrix))
 suppressMessages(library(MAST))
 suppressMessages(library(argparse))
 suppressMessages(library(here))
+suppressMessages(library(dplyr))
 
 parser <- ArgumentParser()
 
@@ -30,7 +31,6 @@ parser$add_argument("--dims", type = "integer", default = 10,
 
 
 args <- parser$parse_args()
-print(args)
 
 data_dir <- args$data_dir
 output_dir <- args$output_dir
@@ -91,5 +91,28 @@ umap.plot <- DimPlot(data.seurat, reduction = "umap", group.by = "seurat_cluster
 ggsave(file.path(output_dir, 'UMAP_plot.png'), umap.plot)
 
 # Save clusters to a csv identified by barcode
-cluster.data <- data.frame(cell_id = colnames(data.seurat), cluster = data.seurat@meta.data$seurat_clusters)
+cluster.data <- data.frame(cell_id = colnames(data.seurat), cluster = as.factor(data.seurat@meta.data$seurat_clusters))
 write.csv(cluster.data, file = file.path(output_dir, "cellClusters.csv"), quote = FALSE, row.names = FALSE)
+
+cluster.data$sample_id <- substring(cluster.data$cell_id, nchar(cluster.data$cell_id))
+
+total_comp <- cluster.data %>% group_by(cluster) %>%
+                              summarise(proportion = n()/nrow(cluster.data))
+total_comp$dummy_var <- "Total"
+plot1 <- ggplot(total_comp, aes(dummy_var, proportion, fill = cluster)) +
+          geom_col() +
+          ggtitle("Total Cluster Composition") +
+          theme(legend.position = "none", axis.title.x = element_blank())
+
+
+sample_comp <- cluster.data %>% group_by(sample_id, cluster) %>% summarise(count = n())
+sample_comp <- sample_comp %>% group_by(sample_id) %>% mutate(proportion = count / sum(count))
+
+plot2 <- ggplot(sample_comp, aes(sample_id, proportion, fill = cluster)) +
+          geom_col() +
+          ggtitle("Cluster Composition by Sample") +
+          theme(axis.title.y = element_blank(),
+                axis.text.y = element_blank(),
+                axis.ticks.y = element_blank())
+
+ggsave(file.path(output_dir, "cell_comp.png"), plot1+plot2)
