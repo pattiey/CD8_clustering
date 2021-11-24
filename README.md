@@ -35,7 +35,15 @@ git clone git@github.com:pattiey/CD8_clustering.git
 cd CD8_clustering
 ```
 
-The create an environment with the required packages:
+Ensure that necessary channels are available:
+
+```
+conda config --add channels 'bioconda'
+conda config --add channels 'r'
+conda config --add channels 'conda-forge'
+```
+
+Then create an environment with the required packages:
 
 ```
 conda create --name cd8_clustering --file env.txt
@@ -46,6 +54,16 @@ Activate the environment:
 ```
 conda activate cd8_clustering
 ```
+
+Due to package conflicts, local R will be used and R packages must be installed outside of the Conda environment.
+Please ensure that your R version is up to date.
+To install needed R packages, run:
+
+```
+Rscript /path/to/CD8_clustering/scripts/init.R
+```
+
+And enter `yes` for any prompts that may appear.
 
 Run the Snakemake workflow with relevant parameters. Be sure to set the appropriate number of cores. Ensure that the `config.yaml` file is updated with the relevant fields before running.
 
