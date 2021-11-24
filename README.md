@@ -8,7 +8,7 @@ A classic example of single cell specific analysis is cell clustering. In a bulk
 
 In this CD8_clustering workflow, we look specifically at CD8+ T cells, also known as "killer T cells", which have a cytotoxic function within adaptive immunity. CD8+ T cells are typically categorized into specific subtypes - naive, memory (stem cell, central, and effector), effector, and exhausted. The subtypes of CD8+ T cell have different gene expression profiles as well as different functions in the immune system.
 
-By performing clustering on scRNA-seq data of CD8+ T cells, one can infer the subtypes of individual cells based on the characteristic gene expressions of each cluster and gain valuable information on the cellular composition of given sample(s).
+By performing clustering on scRNA-seq data of CD8+ T cells, one can infer the subtypes of individual cells based on the characteristic gene expressions of each cluster and gain valuable information on the cellular composition of given sample(s) and therefore the immune function of cells.
 
 # Clustering Method
 
@@ -98,7 +98,7 @@ The workflow produces the result of KNN clustering on the scRNA-seq samples.
 
 Using the sample data and the parameters specified in the Snakefile, here are the plots produced by the workflow.
 
-The K Nearest Neighbours clustering found four distinct clusters. Using this clustering, one could then perform further analysis to find the corresponding CD8+ cell subtype for each cluster in order to extract information about the cellular composition of the experimental samples. 
+The K Nearest Neighbours clustering found four distinct clusters. Using this clustering, one could then perform further analysis to find the corresponding CD8+ cell subtype for each cluster in order to extract information about the cellular composition and immuno-landscape of the experimental samples.
 
 ### Principal Component Plot
 
